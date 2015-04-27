@@ -1,0 +1,26 @@
+﻿La arquitectura del proyecto está dada de la siguiente manera:
+
+Una solución (TextAnalysis,sln) en Visual Studio 2012 utilizando framework 4.5 que está conformada por 5 proyectos:
+
+- TextAnalysisData: Librería de clases. Encargado de la escritura en disco, genera archivos con el Id del cliente en el cual guarda las estadísticas.
+	Se maneja Lock para sincronización de hilos y se implementa el patrón Singleton para crear una única instancia de la clase.
+- TextAnalysisFormsClient: Windows forms. Cliente REST. Cuenta con un único formulario para el envío de datos al servidor.
+	Se implemente el patrón Factory para que quede abierto a otros tipos de comunicación, en este caso se utiliza Rest, se deja abierto para
+	implementar WCF, WS, etc. Se utiliza el patrón fachada para ocultar la funcionalidad del proxy de comunicación. Los errores que se presentan
+	en la comunicación se manejan por medio de un delegado a un método del formulario principal.
+- TextAnalysisModel: Librería de clases. Modelo de datos, en este caso la clase cliente.
+- TextAnalysisService: Aplicación de servicios WCF. Servidor que expone el Rest API utilizando WCF. Se implementa el patrón cadena de responsabilidad
+	para que se puedan ir generando las estadísticas en un orden determinado.
+- Utility: Librería de clases. Contiene las utilidades, en este caso una sola que consiste en crear textos aleatorios.
+
+Adicionalmente se utilizó la librería RestSharp para la creación del Rest API.
+Es necesario crear un directorio para guardar las estadísticas: D:\Logs\ ó modificar "StatisticsPath" en appSettings del web.config del
+proyecto TextAnalysisService. 
+Los servicios están configurados para correr con un puerto fijo, en la URL http://localhost:63956/AnalysisService.svc/.
+
+El envío de los datos se realiza de forma asíncrona, sin embargo el servidor tarda un poco en procesar los datos, es recomendable ir mirando el 
+tamaño de los archivos de logs para ver cuando paran de escribir para evitar problemas de procesos que tienen el archivo agarrado ya que por tiempo
+no se alcanzó a hacer un mejor manejo.
+
+Para poder responder al número de peticiones deseadas (2000/s), requeriría manejar un balanceador de carga con una granja de 4 servidores ya que cada
+uno atendería aproximadamente 6000 peticiones por segundo.
