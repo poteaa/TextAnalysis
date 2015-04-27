@@ -22,5 +22,5 @@ El envío de los datos se realiza de forma asíncrona, sin embargo el servidor t
 tamaño de los archivos de logs para ver cuando paran de escribir para evitar problemas de procesos que tienen el archivo agarrado ya que por tiempo
 no se alcanzó a hacer un mejor manejo.
 
-Para poder responder al número de peticiones deseadas (2000/s), requeriría manejar un balanceador de carga con una granja de 4 servidores ya que cada
+Para poder responder al número de peticiones deseadas (20000/s), requeriría manejar un balanceador de carga con una granja de 4 servidores ya que cada
 uno atendería aproximadamente 6000 peticiones por segundo.
